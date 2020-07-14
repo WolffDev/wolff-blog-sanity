@@ -4,22 +4,29 @@ import Col from "react-bootstrap/Col";
 import PageLayout from "../components/PageLayout";
 import AuthorIntro from "../components/AuthorIntro";
 import CardListItem from "../components/CardItemList";
-import CardItem from "../components/CardItem";
+import CardItem, { Blog } from "../components/CardItem";
 
 import { getAllBlogs } from "../lib/api";
+import { GetStaticProps, NextPage } from "next";
 
-const Home = ({ blogs }) => (
+interface Props {
+  blogs: Blog[];
+}
+
+const Home: NextPage<Props> = ({ blogs }) => (
   <PageLayout>
     <AuthorIntro />
     <hr />
-    {JSON.stringify(blogs)}
+    <pre>{JSON.stringify(blogs, null, 2)}</pre>
     <Row className="mb-5">
-      <Col md="10">
+      {/* <Col md="10">
         <CardListItem />
-      </Col>
-      <Col md="4">
-        <CardItem />
-      </Col>
+      </Col> */}
+      {blogs.map((blog) => (
+        <Col key={blog.slug} md="4">
+          <CardItem blog={blog} />
+        </Col>
+      ))}
     </Row>
   </PageLayout>
 );
@@ -27,11 +34,11 @@ const Home = ({ blogs }) => (
 export default Home;
 
 // This function is called during build time and provide props to the page
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async (context) => {
   const blogs = await getAllBlogs();
   return {
     props: {
       blogs,
     },
   };
-}
+};
