@@ -6,10 +6,13 @@ import AuthorIntro from "../components/AuthorIntro";
 import CardListItem from "../components/CardItemList";
 import CardItem from "../components/CardItem";
 
-const Home = () => (
+import { getAllBlogs } from "../lib/api";
+
+const Home = ({ blogs }) => (
   <PageLayout>
     <AuthorIntro />
     <hr />
+    {JSON.stringify(blogs)}
     <Row className="mb-5">
       <Col md="10">
         <CardListItem />
@@ -22,3 +25,13 @@ const Home = () => (
 );
 
 export default Home;
+
+// This function is called during build time and provide props to the page
+export async function getStaticProps() {
+  const blogs = await getAllBlogs();
+  return {
+    props: {
+      blogs,
+    },
+  };
+}
